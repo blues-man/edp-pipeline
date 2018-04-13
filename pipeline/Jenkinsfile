@@ -1,16 +1,16 @@
 node('php')  {
          stage 'BuildDev'
-         openshiftBuild(namespace: 'edp2', buildConfig: 'rails-ex', showBuildLogs: 'true')
+         openshiftBuild(namespace: 'edp2', buildConfig: 'php-ex', showBuildLogs: 'true')
          stage 'VerifyBuild'
-         openshiftVerifyBuild(namespace: 'edp2', buildConfig: 'rails-ex') 
+         openshiftVerifyBuild(namespace: 'edp2', buildConfig: 'php-ex') 
          stage 'DeployTest'
-         openshiftDeploy(namespace: 'edp2', deploymentConfig: 'rails-ex', showBuildLogs: 'true')
+         openshiftDeploy(namespace: 'edp2', deploymentConfig: 'php-ex', showBuildLogs: 'true')
          stage 'VerifyDeploymentTest'
-         openshiftVerifyDeployment(namespace: 'edp2', deploymentConfig: 'rails-ex')
+         openshiftVerifyDeployment(namespace: 'edp2', deploymentConfig: 'php-ex')
          stage('Promote to Prod?') {
                   timeout(time:15, unit:'MINUTES') {
                       input message: "Promote to Prod?", ok: "Promote"
                 }
-                openshiftDeploy(namespace: 'edp-prod', deploymentConfig: 'rails-ex', showBuildLogs: 'true')
+                openshiftDeploy(namespace: 'edp-prod', deploymentConfig: 'php-ex', showBuildLogs: 'true')
          }
 } 
