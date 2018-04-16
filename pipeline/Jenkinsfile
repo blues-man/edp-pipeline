@@ -1,16 +1,17 @@
 node('php')  {
          stage 'BuildDev'
-         openshiftBuild(namespace: 'edp2', buildConfig: 'php-ex', showBuildLogs: 'true')
+         openshiftBuild(namespace: 'php-dev', buildConfig: 'php-example', showBuildLogs: 'true')
          stage 'VerifyBuild'
-         openshiftVerifyBuild(namespace: 'edp2', buildConfig: 'php-ex') 
+         openshiftVerifyBuild(namespace: 'php-dev', buildConfig: 'php-example') 
          stage 'DeployTest'
-         openshiftDeploy(namespace: 'edp2', deploymentConfig: 'php-ex', showBuildLogs: 'true')
+         openshiftDeploy(namespace: 'php-dev', deploymentConfig: 'php-example', showBuildLogs: 'true')
          stage 'VerifyDeploymentTest'
-         openshiftVerifyDeployment(namespace: 'edp2', deploymentConfig: 'php-ex')
-         stage('Promote to Prod?') {
+         openshiftVerifyDeployment(namespace: 'php-dev', deploymentConfig: 'php-example')
+         stage('Promote to Test?') {
                   timeout(time:15, unit:'MINUTES') {
-                      input message: "Promote to Prod?", ok: "Promote"
+                      input message: "Promote to Test?", ok: "Promote"
                 }
-                openshiftDeploy(namespace: 'edp-prod', deploymentConfig: 'php-ex', showBuildLogs: 'true')
+                openshiftTag(namespace: 'php-dev', sourceStream: 'php-example', sourceTag: 'latest', destinationNamespace: 'php-test', destinationStream: 'php-example', destinationTag: 'latest')
+                openshiftDeploy(namespace: 'php-test', deploymentConfig: 'php-example', showBuildLogs: 'true')
          }
 } 
