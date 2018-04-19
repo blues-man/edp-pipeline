@@ -22,13 +22,13 @@ spec:
     jenkinsPipelineStrategy:
       env:
       - name: GIT_REPO_URL
-        value: ${GIT_REPO_URL}
+        value: https://bluesmanyo@bitbucket.org/bluesmanyo/openshift-tasks.git
       - name: GIT_REPO_BRANCH
-        value: ${GIT_REPO_BRANCH}
+        value: eap-7
       - name: DEV_PROJECT
-        value: ${DEV_PROJECT}
+        value: dev-cicd
       - name: STAGE_PROJECT
-        value: ${STAGE_PROJECT}
+        value: stage-cicd
       jenkinsfile: |-
 
         pipeline {
