@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "jenkins", "namespace": "", "kind": "DeploymentConfig"}]'
+  labels:
+    app: cicd-pipeline-windows
+    name: cicd-pipeline-windows
+  name: tasks-pipeline-windows
+spec:
+  triggers:
+    - type: GitHub
+      github:
+        secret: ${WEBHOOK_SECRET}
+    - type: Generic
+      generic:
+        secret: ${WEBHOOK_SECRET}
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    jenkinsPipelineStrategy:
+      env:
+      - name: GIT_REPO_URL
+        value: ${GIT_REPO_URL}
+      - name: GIT_REPO_BRANCH
+        value: ${GIT_REPO_BRANCH}
+      - name: DEV_PROJECT
+        value: ${DEV_PROJECT}
+      - name: STAGE_PROJECT
+        value: ${STAGE_PROJECT}
+      jenkinsfile: |-
+
+        pipeline {
+          agent {
+            label 'windows-slave'
+          }
+          stages {
+            stage('Build App') {
+              steps {
+                git branch: env.GIT_REPO_BRANCH, url: env.GIT_REPO_URL
+              }
+            }
+          }
+        }
+    type: JenkinsPipeline
