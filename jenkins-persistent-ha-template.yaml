@@ -19,13 +19,13 @@ metadata:
     openshift.io/provider-display-name: Red Hat, Inc.
     openshift.io/support-url: https://access.redhat.com
     tags: instant-app,jenkins
-  creationTimestamp: null
   name: jenkins-persistent-ha
 objects:
 - apiVersion: v1
   kind: Route
   metadata:
     annotations:
+      haproxy.router.openshift.io/balance: source
       template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
     name: ${JENKINS_SERVICE_NAME}
   spec:
@@ -45,7 +45,7 @@ objects:
     resources:
       requests:
         storage: ${VOLUME_CAPACITY}
-    storageClassName: ''
+    storageClassName: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -171,7 +171,7 @@ objects:
       targetPort: 8080
     selector:
       name: ${JENKINS_SERVICE_NAME}
-    sessionAffinity: None
+    sessionAffinity: ClientIP
     type: ClusterIP
 parameters:
 - description: The name of the OpenShift Service exposed for the Jenkins container.
